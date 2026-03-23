@@ -1,61 +1,43 @@
 # scrape-url: Claude Code Skill
 
-A Claude Code slash command that gives Claude a fallback web scraper using [Camoufox](https://camoufox.com/) — a hardened Firefox-based browser that bypasses bot detection, JS rendering, and most anti-scraping measures.
+A Claude Code skill that gives Claude a fallback web scraper using [Camoufox](https://camoufox.com/) — a hardened Firefox-based browser that bypasses bot detection, JS rendering, and most anti-scraping measures.
 
 When `WebFetch` returns a blocked page, empty content, or JS-rendered shell, Claude can invoke `/scrape-url <url>` to get the real page content.
 
 ## How it works
 
 1. Claude calls `/scrape-url https://example.com`
-2. `scrape_url.py` launches a headless Camoufox browser, navigates to the URL, waits for network idle, then saves `{encoded_url}.html` — full rendered HTML
+2. `scrape_url.py` launches a headless Camoufox browser, navigates to the URL, waits for network idle, then saves `{encoded_url}.html` to `/tmp/claude-scrape/`
 3. Claude reads the saved HTML, parses it with BeautifulSoup, and extracts whatever you need
-
-HTML files are saved to `/tmp/claude-scrape/` and can be deleted at any time.
 
 ## Setup
 
-**1. Install dependencies**
+**1. Install the skill**
+
+Clone into your personal skills directory:
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/greg-randall/scrape-url-skill ~/.claude/skills/scrape-url
 ```
 
-Camoufox also needs its browser binary on first use:
+**2. Install dependencies**
 
 ```bash
+pip install -r ~/.claude/skills/scrape-url/requirements.txt
 python3 -m camoufox fetch
 ```
 
-**2. Install the skill**
-
-Copy `.claude/commands/scrape-url.md` into your project's `.claude/commands/` folder (or `~/.claude/commands/` for global use).
-
-Edit the path in `scrape-url.md` to point to wherever you've placed `scrape_url.py`.
-
-**3. Allow the Bash command in Claude Code settings**
-
-Add permission rules so Claude can run the script without prompting every time. In `~/.claude/settings.json`:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(cd:*)",
-      "Bash(python3:*)"
-    ]
-  }
-}
-```
-
-`cd:*` is needed because the skill runs `cd /path/to/script && python3 scrape_url.py ...`.
+That's it. No path editing required — the skill uses `${CLAUDE_SKILL_DIR}` to find `scrape_url.py` automatically.
 
 ## Usage
 
-Once installed, Claude can use it automatically as a fallback, or you can invoke it directly:
+Invoke directly:
 
 ```
-/scrape-url https://some-js-heavy-site.com/funders/
+/scrape-url https://some-js-heavy-site.com
 ```
+
+Or Claude will use it automatically when WebFetch returns blocked/empty content.
 
 Optional argument:
 
@@ -64,6 +46,12 @@ Optional argument:
 ```
 
 `--wait-time` controls how long (in seconds) to wait for network idle before giving up (default: 30).
+
+## Updating
+
+```bash
+git -C ~/.claude/skills/scrape-url pull
+```
 
 ## Requirements
 

@@ -1,12 +1,19 @@
+---
+name: scrape-url
+description: Scrape a URL using the Camoufox headless browser when WebFetch returns blocked, empty, or JS-rendered content. Use as a fallback for bot-protected or JavaScript-heavy pages.
+argument-hint: <url> [--wait-time <seconds>]
+allowed-tools: Bash(cd *), Bash(python3 *), Read
+---
+
 Scrape a URL using the Camoufox headless browser (bypasses JS rendering and bot detection) and return the page content for extraction.
 
-Use this as a fallback when WebFetch returns blocked/empty/JS-rendered content.
+Use this as a fallback when WebFetch returns blocked, empty, or JS-rendered content.
 
 Given a URL as $ARGUMENTS:
 
 1. Run the scraper:
    ```
-   cd "/path/to/scrape-url-skill" && python3 scrape_url.py $ARGUMENTS
+   cd "${CLAUDE_SKILL_DIR}" && python3 scrape_url.py $ARGUMENTS
    ```
 
 2. Determine the saved HTML filename:
