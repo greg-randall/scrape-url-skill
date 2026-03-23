@@ -15,4 +15,4 @@ Given a URL as $ARGUMENTS:
    - Append `.html`
    - Full path: `/tmp/claude-scrape/{filename}`
 
-3. Read the HTML file and parse it with BeautifulSoup to extract the page content, links, and any funder/organization names and URLs present.
+3. Read the HTML file and parse it with BeautifulSoup to extract the page content and links relevant to the task at hand.
